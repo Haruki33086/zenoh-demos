@@ -22,11 +22,16 @@ via the zenoh REST API, bridged to ROS2.
       ```
  2. Start the zenoh/DDS bridge, activating its REST API:
       ```bash
-      zenoh-bridge-dds --rest-plugin
+      ./zenoh-bridge-dds --rest-http-port 8000
       ```
  5. Open the `ros2-teleop.html` file in a Web browser
  6. In this page:
      - If needed, adapt the "URL of your zenoh-bridge-dds" to the host where your bridge is running
      - Click on "Subscribe" button
      - All the messages published on "rt/rosout" via ROS2 should be displayed in the bottom box.
+ 7. In my environments
+      ```bash
+      ./target/release/zenoh-bridge-dds -e tcp/<cloud_ip>:7447 -m client --rest-http-port 8000 --scope "<simu>"
+      ```
+     
 
