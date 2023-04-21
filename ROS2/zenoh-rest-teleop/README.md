@@ -37,7 +37,7 @@ via the zenoh REST API, bridged to ROS2.
       ```
       zenohd -P webserver:/usr/lib/libzplugin_webserver.so --cfg "plugins/webserver:{http_port:8080,}" --cfg "plugins/rest:{http_port:8000,}"
       ```
- 9. Refer to [https://trello.com/c/vDoDqjL4/53-zenohを用いた低遅延映像配信](this link) to start zcapture
+ 9. Refer to [https://trello.com/c/vDoDqjL4/53-zenohを用いた低遅延映像配信] to start zcapture
  10. If you cannot receive camera image, you may have forgotten to open port 8080 of the VM.
      
 
