@@ -34,10 +34,15 @@ via the zenoh REST API, bridged to ROS2.
       ./target/release/zenoh-bridge-dds -e tcp/<cloud_ip>:7447 -m client --rest-http-port 8000 --scope "<simu>"
       ```
  8. If you try to receive camera image, you activate the zenoh router as shown below (you must install zenoh-websetver-plugin)
+    - How to install webserver plugin
+       Go to (download site)[https://download.eclipse.org/zenoh/zenoh-plugin-webserver/] from (webserver plugin site)[https://github.com/orgs/eclipse-zenoh/repositories?type=all]
+      Select and download the appropriate version
       ```
       zenohd -P webserver:/usr/lib/libzplugin_webserver.so --cfg "plugins/webserver:{http_port:8080,}" --cfg "plugins/rest:{http_port:8000,}"
       ```
  9. Refer to [https://trello.com/c/vDoDqjL4/53-zenohを用いた低遅延映像配信] to start zcapture
  10. If you cannot receive camera image, you may have forgotten to open port 8080 of the VM.
+
+
      
 
