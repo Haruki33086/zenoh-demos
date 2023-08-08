@@ -36,9 +36,11 @@ via the zenoh REST API, bridged to ROS2.
  8. If you try to receive camera image, you activate the zenoh router as shown below (you must install zenoh-websetver-plugin)
     - How to install webserver plugin
       
-      Go to [download site](https://download.eclipse.org/zenoh/zenoh-plugin-webserver/) from [webserver plugin site](https://github.com/orgs/eclipse-zenoh/repositories?type=all)
-      
-      Select and download the appropriate version
+      Go to [download site](https://download.eclipse.org/zenoh/zenoh-plugin-webserver/) from [webserver plugin site](https://github.com/orgs/eclipse-zenoh/repositories?type=all) and Select and download the appropriate version
+      ```
+      sudo apt install ./zenoh-plugin-webserver_0.7.2-rc_amd64.deb
+      ```
+     - Launch zenoh router
       ```
       zenohd -P webserver:/usr/lib/libzplugin_webserver.so --cfg "plugins/webserver:{http_port:8080,}" --cfg "plugins/rest:{http_port:8000,}"
       ```
