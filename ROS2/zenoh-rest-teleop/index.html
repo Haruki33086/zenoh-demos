@@ -139,7 +139,7 @@
     </div>
 
     <div class="w3-card-4 w3-margin-bottom">
-        <header class="w3-bar w3-cyan" onclick="document.getElementById('Joystick').classList.toggle('w3-hide');">
+        <header class="w3-bar w3-cyan" onclick="toggleJoystick();">
             <h5 id="joystick_label" class="w3-bar-item" style="margin: 0; color: white;">Joystick</h5>
             <h5 class="w3-bar-item w3-right" style="margin: 0;"><i class='fa fa-gamepad' style='color: white;'></i></h5>
         </header>
@@ -272,6 +272,17 @@
 
         // Timer for joystick made by chatgpt
         let twistInterval = null;
+
+        let joystickVisible = false;
+        function toggleJoystick() {
+        let joystickContainer = document.getElementById('JoystickContainer');
+            if (joystickVisible) {
+                joystickContainer.classList.add('w3-hide');
+            } else {
+                joystickContainer.classList.remove('w3-hide');
+            }
+            joystickVisible = !joystickVisible;
+        }
 
         function startTwist(angular, linear) {
             pubTwist(angular, linear);
