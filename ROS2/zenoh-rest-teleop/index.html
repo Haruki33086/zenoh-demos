@@ -285,19 +285,19 @@
         }
 
         function startTwist(angular, linear) {
-            pubTwist(angular, linear);
+            pubTwist(angular, linear, drive_topic);
             twistInterval = setInterval(function() {
-                pubTwist(angular, linear);
+                pubTwist(angular, linear, drive_topic);
             }, 100); // 100 milliseconds, adjust as needed
         }
 
         function stopTwist() {
             clearInterval(twistInterval);
-            pubTwist(0.0, 0.0);
+            pubTwist(0.0, 0.0, drive_topic);
         }
 
         // Function to publish a Twist to cmd_vel topic
-        function pubTwist(linear, angular) {
+        function pubTwist(linear, angular, topicName) {
             // Get scales from HTML
             var linear_scale = document.getElementById("linear_scale").value
             var angular_scale = document.getElementById("angular_scale").value
@@ -313,8 +313,8 @@
             var writer = new jscdr.CDRWriter();
             twist.encode(writer);
             // The key expression for publication
-            var key_expr = scope + drive_topic;
-            console.log("Send cmd_vel to " + rest_api + key_expr);
+            var key_expr = scope + topicName;
+            console.log("Send " + topicName + " to " + rest_api + key_expr);
 
             // PUT it to zenoh via its REST API
             Http.open('PUT', rest_api + key_expr, true);
@@ -328,45 +328,15 @@
             var linear_scale = document.getElementById("linear_scale").value
             var angular_scale = document.getElementById("angular_scale").value
 
-            // Create a Twist message
-            var twist = new Twist(
-                new Vector3(linear , 0.0, 0.0),
-                new Vector3(0.0, 0.0, angular));
-            console.log(twist);
-            // Since it's going to DDS, encode it using a jscdr.CDRWriter
-            var writer = new jscdr.CDRWriter();
-            twist.encode(writer);
-
-            // The key expression for publication
-            var key_expr = scope + drive_topic;
-            console.log("Send cmd_vel to " + rest_api + key_expr);
-
-            // PUT it to zenoh via its REST API
-            Http.open('PUT', rest_api + key_expr, true);
-            Http.setRequestHeader('Content-Type', 'application/octet-stream');
-            Http.send(writer.buf.buffer);
+            pubTwist(linear / linear_scale, angular / angular_scale, drive_topic);
         }
         // Function to publish a Twist to rotation topic
         function pubTwistRotation(linear, angular) {
-            // Create a Twist message
-            let rotation_topic_name = "rt/rotation"; // changeable topic name
-            var twist = new Twist(
-                new Vector3(linear , 0.0, 0.0),
-                new Vector3(0.0, 0.0, angular));
-            console.log(twist);
-            console.log(linear);
-            // Since it's going to DDS, encode it using a jscdr.CDRWriter
-            var writer = new jscdr.CDRWriter();
-            twist.encode(writer);
+            // Get scales from HTML
+            var linear_scale = document.getElementById("linear_scale").value
+            var angular_scale = document.getElementById("angular_scale").value
 
-            // The key expression for publication
-            var key_expr = scope + rotation_topic_name;
-            console.log("Send rotation to " + rest_api + key_expr);
-
-            // PUT it to zenoh via its REST API
-            Http.open('PUT', rest_api + key_expr, true);
-            Http.setRequestHeader('Content-Type', 'application/octet-stream');
-            Http.send(writer.buf.buffer);
+            pubTwist(linear / linear_scale, angular / angular_scale, "rt/rotation");
         }
         // create joystick instance
         createJoystick = function () {
@@ -378,14 +348,14 @@
                 size: 150,
                 color: '#000000',
             };
-            manager = nipplejs.create(options);
+            let manager = nipplejs.create(options);
 
-            linear_speed = 0;
-            angular_speed = 0;
+            let linear_speed = 0;
+            let angular_speed = 0;
 
             manager.on('start', function (event, nipple) {
                 timer = setInterval(function () {
-                    pubTwistJoy(linear_speed, angular_speed);
+                    pubTwistJoy(linear_speed, angular_speed, drive_topic);
                 }, 25);
             });
 
@@ -401,7 +371,7 @@
                 if (timer) {
                     clearInterval(timer);
                 }
-                self.pubTwistJoy(0, 0);
+                self.pubTwistJoy(0, 0, drive_topic);
             });
         }   
         document.addEventListener('DOMContentLoaded', function() {
@@ -455,7 +425,7 @@
             } else {
                 angular_speed = 0.0; // stop
             }
-            pubTwistJoy(linear_speed, angular_speed);
+            pubTwistJoy(linear_speed, angular_speed, drive_topic);
         }
         window.addEventListener("gamepadconnected", function() {
             console.log("Gamepad connected");
@@ -469,23 +439,23 @@
             console.log("KeyPressed: " + e);
             if (e.keyCode == '38') {
                 // up arrow
-                pubTwist(1.0, 0.0);
+                pubTwist(1.0, 0.0), drive_topic;
             }
             else if (e.keyCode == '40') {
                 // down arrow
-                pubTwist(-1.0, 0.0);
+                pubTwist(-1.0, 0.0, drive_topic);
             }
             else if (e.keyCode == '37') {
                 // left arrow
-                pubTwist(0.0, 1.0);
+                pubTwist(0.0, 1.0, drive_topic);
             }
             else if (e.keyCode == '39') {
                 // right arrow
-                pubTwist(0.0, -1.0);
+                pubTwist(0.0, -1.0, drive_topic);
             }
             else if (e.keyCode == '32') {
                 // spacebar
-                pubTwist(0.0, 0.0);
+                pubTwist(0.0, 0.0, drive_topic);
             }
         }
         // register callback on key down
@@ -495,7 +465,7 @@
         function onkeyup(e) {
             // if key pressed was an arrow, send a Twist(0,0) to stop the robot
             if (e.keyCode == '37' || e.keyCode == '38' || e.keyCode == '39' || e.keyCode == '40')
-                pubTwist(0.0, 0.0);
+                pubTwist(0.0, 0.0, drive_topic);
         }
         // register callback on key up
         document.onkeyup = onkeyup;
@@ -664,7 +634,7 @@
         //////////////////////////////////
         //    Logs subscription (ROS2)  //
         //////////////////////////////////
-        var ros2_logs_source = null;
+        let ros2_logs_source = null;
 
         // Test if Server-Source Event is supported
         if (typeof (EventSource) !== "undefined") {
@@ -702,7 +672,7 @@
         //////////////////////////////////
         //    Logs subscription (MQTT)  //
         //////////////////////////////////
-        var mqtt_logs_source = null;
+        let mqtt_logs_source = null;
 
         // Test if Server-Source Event is supported
         if (typeof (EventSource) !== "undefined") {
