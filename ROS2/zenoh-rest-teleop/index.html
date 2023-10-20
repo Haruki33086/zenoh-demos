@@ -54,18 +54,31 @@
 
     <!-- If your robot has a camera and zcapture installed (from zenoh-demos/computer-vision/zcam/), uncomment this:  -->
     
-    <div class="w3-card-4 w3-margin-bottom">
-        <header class="w3-bar w3-cyan" onclick="document.getElementById('Camera').classList.toggle('w3-hide');">
-            <h5 id="camera_label" class="w3-bar-item" style="margin: 0; color: white;">Camera</h5>
-            <h5 class="w3-bar-item w3-right" style="margin: 0;"><i class='fa fa-video-camera' style='color: white;'></i></h5>
-        </header>
-        <div id="Camera" class="w3-container w3-padding">
-            <img id="camera_img" class="w3-container w3-padding" style="max-width: 95%; max-height: 300px;" src="" />
-            <!-- <div id="Joystick"></div> -->
+    <div class="w3-row">
+        <div class="w3-col s6 m6 l6">
+            <div class="w3-card-4">
+                <header class="w3-bar w3-cyan" onclick="document.getElementById('Camera1').classList.toggle('w3-hide');">
+                    <h5 id="camera_label1" class="w3-bar-item" style="margin: 0; color: white;">Camera 1</h5>
+                    <h5 class="w3-bar-item w3-right" style="margin: 0;"><i class='fa fa-video-camera' style='color: white;'></i></h5>
+                </header>
+                <div id="Camera1" class="w3-container w3-padding">
+                    <img id="camera_img1" class="w3-container w3-padding" style="max-width: 95%; max-height: 300px;" src="" />
+                </div>
+            </div>
         </div>
-        <br />
+        <div class="w3-col s6 m6 l6">
+            <div class="w3-card-4">
+                <header class="w3-bar w3-cyan" onclick="document.getElementById('Camera2').classList.toggle('w3-hide');">
+                    <h5 id="camera_label2" class="w3-bar-item" style="margin: 0; color: white;">Camera 2</h5>
+                    <h5 class="w3-bar-item w3-right" style="margin: 0;"><i class='fa fa-video-camera' style='color: white;'></i></h5>
+                </header>
+                <div id="Camera2" class="w3-container w3-padding">
+                    <img id="camera_img2" class="w3-container w3-padding" style="max-width: 95%; max-height: 300px;" src="" />
+                </div>
+            </div>
+        </div>
     </div>
-   
+    
 
     <!-- <div class="w3-card-4 w3-margin-bottom">
         <header class="w3-bar w3-cyan" onclick="document.getElementById('Drive').classList.toggle('w3-hide');">
@@ -470,6 +483,10 @@
         // register callback on key up
         document.onkeyup = onkeyup;
 
+        function changeBockgroundColor() {
+            let elem = document.getElementById("drive_label");
+            elem.style.backgroundColor = "red";
+        }
 
         ////////////////////////////
         //  Battery subscription  //
@@ -509,17 +526,24 @@
 
         // If your robot has a camera and zcapture installed (from zenoh-demos/computer-vision/zcam/):
         // the zcapture must be started with "-k <scope>/camera", and the zenoh router must have the WebServer plugin running
-        if (document.getElementById("camera_img") != null) {
-            // update Camera label
-            let elem = document.getElementById("camera_label");
-            elem.innerHTML = "Camera ( " + sub_scope + "camera )";
+        function updateCameraDisplay(cameraNumber, subScope) {
+            const cameraLabel = document.getElementById("camera_label" + cameraNumber);
+            const cameraImg = document.getElementById("camera_img" + cameraNumber);
 
-            // Set "camera_img" element's src to the same URL host, but with port 8080 (WebServer plugin)
-            // and with path: "<scope>/camera?_method=SUB"
-            img_url = rest_api.replace(":8000", ":8080") + sub_scope + "camera?_method=SUB";
-            console.log("Set camera_img src to: " + img_url);
-            document.getElementById("camera_img").src = img_url;
+            if (cameraImg != null) {
+                // Update Camera label
+                cameraLabel.innerHTML = "Camera " + cameraNumber + " ( " + subScope + "camera )";
+
+                // Set "camera_img" element's src to the same URL host, but with port 8080 (WebServer plugin)
+                // and with path: "<scope>/camera?_method=SUB"
+                const imgURL = rest_api.replace(":8000", ":8080") + subScope + "camera?_method=SUB";
+                console.log("Set camera_img" + cameraNumber + " src to: " + imgURL);
+                cameraImg.src = imgURL;
+            }
         }
+
+        updateCameraDisplay(1, sub_scope);
+        updateCameraDisplay(2, sub_scope.slice(0, -1) + "1/");
 
 
         ///////////////////////////////
