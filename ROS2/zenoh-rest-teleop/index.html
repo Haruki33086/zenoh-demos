@@ -76,11 +76,11 @@
                 </header>
                 <div id="Camera2" class="w3-container w3-padding">
                     <div class="camera-image-container">
-                        <button onmousedown="startTwistRotation(1.0, 0.0)" onmouseup="stopTwistRotation()"
-                         ontouchstart="startTwistRotation(1.0, 0.0);" ontouchend="stopTwistRotation();" class="cross-button left"><i class="fas fa-caret-left"></i></button>
+                        <button onmousedown="startTwistRotation(0.0, 1.0)" onmouseup="stopTwistRotation()"
+                         ontouchstart="startTwistRotation(0.0, 1.0);" ontouchend="stopTwistRotation();" class="cross-button left"><i class="fas fa-caret-left"></i></button>
                         <img id="camera_img2" class="w3-container w3-padding" style="max-width: 95%; max-height: 300px;" src="" />
-                        <button onmousedown="startTwistRotation(-1.0, 0.0)" onmouseup="stopTwistRotation()"
-                        ontouchstart="startTwistRotation(-1.0, 0.0);" ontouchend="stopTwistRotation();" class="cross-button right"><i class="fas fa-caret-right"></i></button>
+                        <button onmousedown="startTwistRotation(0.0, -1.0)" onmouseup="stopTwistRotation()"
+                        ontouchstart="startTwistRotation(0.0, -1.0);" ontouchend="stopTwistRotation();" class="cross-button right"><i class="fas fa-caret-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -157,7 +157,7 @@
             <br />
         </div>
     </div> -->
-    
+
     <!-- created by chatgpt -->
     <div class="w3-card-4 w3-margin-bottom">
         <header class="w3-bar w3-cyan" onclick="document.getElementById('Drive').classList.toggle('w3-hide');">
@@ -240,7 +240,6 @@
                 value="0.5"><br />
         </form>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bytebuffer@5.0.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/jscdr@0.0.1"></script>
@@ -340,10 +339,10 @@
             joystickVisible = !joystickVisible;
         }
 
-        function startTwist(angular, linear) {
-            pubTwist(angular, linear, drive_topic);
+        function startTwist(linear, angular) {
+            pubTwist(linear, angular, drive_topic);
             twistInterval = setInterval(function() {
-                pubTwist(angular, linear, drive_topic);
+                pubTwist(linear, angular, drive_topic);
             }, 100); // 100 milliseconds, adjust as needed
         }
 
@@ -377,7 +376,6 @@
             Http.setRequestHeader('Content-Type', 'application/octet-stream');
             Http.send(writer.buf.buffer);
         }
-
         // Function to publish a Twist to cmd_vel topic with nipplejs
         function pubTwistJoy(linear, angular) {
             // Get scales from HTML
@@ -395,7 +393,7 @@
             pubTwist(linear / linear_scale, angular / angular_scale, "rt/rotation");
         }
 
-        function startTwistRotation(angular, linear) {
+        function startTwistRotation(linear, angular) {
             var linear_scale = document.getElementById("linear_scale").value
             var angular_scale = document.getElementById("angular_scale").value
             pubTwist(linear / linear_scale, angular / angular_scale, "rt/rotation");
@@ -510,7 +508,7 @@
             console.log("KeyPressed: " + e);
             if (e.keyCode == '38') {
                 // up arrow
-                pubTwist(1.0, 0.0), drive_topic;
+                pubTwist(1.0, 0.0, drive_topic);
             }
             else if (e.keyCode == '40') {
                 // down arrow
@@ -602,7 +600,6 @@
 
         updateCameraDisplay(1, sub_scope);
         updateCameraDisplay(2, sub_scope.slice(0, -1) + "1/");
-
 
         ///////////////////////////////
         //    Lidar subscription     //
@@ -778,42 +775,6 @@
         } else {
             document.getElementById("rosout_logs").innerHTML = "Sorry, your browser does not support server-sent events...";
         }
-
-        ///////////////////////////////
-        //    Camera2 subscription   //
-        ///////////////////////////////
-        // const camera2 = document.getElementById("Camera2");
-
-        // let isMousePressed = false;
-        // let prevMouseX = null;
-
-        // camera2.addEventListener("mousedown", (event) => {
-        //     isMousePressed = true;
-        //     prevMouseX = event.clientX;
-        // });
-
-        // camera2.addEventListener("mouseup", () => {
-        //     isMousePressed = false;
-        //     prevMouseX = null;
-        // });
-
-        // camera2.addEventListener("mousemove", (event) => {
-        //     if (isMousePressed) {
-        //         const currentMouseX = event.clientX;
-        //         const deltaX = currentMouseX - prevMouseX;
-                
-        //         // Define your logic to publish to cmd_vel topic here.
-        //         if (deltaX > 0) {
-        //             // Right movement, publish angular.z = 1.0
-        //             pubTwistRotation(0.0, 1.0);
-        //         } else if (deltaX < 0) {
-        //             // Left movement, publish angular.z = -1.0
-        //             pubTwistRotation(0.0, -1.0);
-        //         }
-                
-        //         prevMouseX = currentMouseX;
-        //     }
-        // });
 
         /////////////////////////////////////////////////////////////
         // ROS2 Types declaration with CDR encode/decode functions //
