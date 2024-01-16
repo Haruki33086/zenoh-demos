@@ -1,0 +1,131 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+}
+
+main {
+    display: block;
+    padding: 1em;
+}
+
+section {
+    margin-bottom: 10px;
+}
+
+.section-header {
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.section-content {
+    display: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+#top-sections {
+    display: flex;
+    justify-content: space-between;
+}
+
+#camera, #controls {
+    flex-basis: 48%; /* セクションの幅を調整 */
+}
+
+#controls {
+    padding: 10px;
+}
+
+#camera-view-container, #control-buttons {
+    margin-bottom: 20px;
+}
+
+#control-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 5px;
+}
+
+.control-btn {
+    padding: 10px;
+    font-size: 1em;
+}
+
+/* 各ボタンのグリッド位置を設定 */
+#move-forward {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+#move-left {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+#move-stop {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+#move-right {
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+}
+
+#move-backward {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+}
+
+#camera img {
+    width: 100%;
+    height: auto;
+}
+
+#log-messages {
+    height: 200px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+#config div {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#config label {
+    margin-right: 10px;
+    width: 120px; /* labelの幅を固定 */
+    text-align: right; /* テキストを右揃えに設定 */
+}
+
+#config input[type=range] {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+#config span {
+    width: 40px;
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    padding: 1em 0;
+    background-color: #ddd;
+}

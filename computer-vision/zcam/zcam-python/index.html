@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenoh ROS2 Teleop Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Zenoh ROS2 Teleop</h1>
+        </header>
+        <main>
+            <div id="top-sections">
+                <section id="camera">
+                    <h2>Camera View</h2>
+                    <img id="camera-img" src="" alt="Camera Feed" style="max-width: 100%; height: auto;">
+                </section>
+
+                <section id="controls">
+                    <div id="camera-view-container">
+                        <h2>Camera View</h2>
+                        <img id="realsense-img" src="" alt="Camera Feed" style="max-width: 100%; height: auto;">
+                    </div>
+                    <h2>Controls</h2>
+                    <div id="control-grid">
+                        <button id="move-forward" class="control-btn">Forward</button>
+                        <button id="move-left" class="control-btn">Left</button>
+                        <button id="move-stop" class="control-btn">Stop</button>
+                        <button id="move-right" class="control-btn">Right</button>
+                        <button id="move-backward" class="control-btn">Backward</button>
+                    </div>
+                </section>
+            </div>
+
+            <section id="logs">
+                <h2>Logs</h2>
+                <div style="overflow:auto; height:200px; border:1px solid black;" id="log-messages"></div>
+            </section>
+
+            <section id="config-section">
+                <h2 class="section-header" onclick="toggleSection('config')">Config</h2>
+                <div id="config" class="section-content">
+                    <div>
+                        <label for="linear-scale">Linear Scale:</label>
+                        <input id="linear-scale" type="range" min="0.0" max="2.0" step="0.1" value="1.0">
+                        <span id="linear-value">1</span>
+                    </div>
+                    <div>
+                        <label for="angular-scale">Angular Scale:</label>
+                        <input id="angular-scale" type="range" min="0.0" max="2.0" step="0.1" value="1.0">
+                        <span id="angular-value">1</span>
+                    </div>
+                    <div>
+                        <label for="rest-api-url-value">REST API URL:</label>
+                        <input id="rest-api-url-value" type="text" size="30" value="http://13.208.62.139:8000/">
+                    </div>
+                    <div>
+                        <label for="sub-scope-value">Sub Scope:</label>
+                        <input id="sub-scope-value" type="text" size="30" value="simu">
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Zenoh ROS2 Teleop</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bytebuffer@5.0.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jscdr@0.0.1"></script>
+</body>
+</html>
