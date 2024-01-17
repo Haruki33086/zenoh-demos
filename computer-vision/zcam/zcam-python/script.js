@@ -1,5 +1,5 @@
 // 初期化
-let restApiBase = 'http://13.208.62.139:8000/';
+let restApiBase = 'http://<your ip>:8000/';
 let subScope = 'simu';
 const TOPIC_LOGS = "/rt/rosout";
 const TOPIC_DRIVE = "/rt/turtle1/cmd_vel";
