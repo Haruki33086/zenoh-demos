@@ -1,5 +1,5 @@
 // 初期化
-let restApiBase = 'http://<your ip>:8000/';
+let restApiBase = 'http://13.208.62.139:8000/';
 let subScope = 'simu';
 const TOPIC_LOGS = "/rt/rosout";
 const TOPIC_DRIVE = "/rt/turtle1/cmd_vel";
@@ -137,6 +137,51 @@ if (typeof (EventSource) !== "undefined") {
     document.getElementById("logs-messages").innerHTML = "お使いのブラウザはサーバー送信イベントをサポートしていません...";
 }
 
+// /rt/chatterトピックの購読
+var chatterSource = null;
+const TOPIC_CHATTER = "/rt/chatter";
+
+if (typeof (EventSource) !== "undefined") {
+    var key_expr_chatter = subScope + TOPIC_CHATTER;
+    console.log("Subscribe to EventSource: " + restApiBase + key_expr_chatter);
+    chatterSource = new EventSource(restApiBase + key_expr_chatter);
+    chatterSource.addEventListener("PUT", function (e) {
+        // console.log("Received chatter message: " + e.data);
+        let sample = JSON.parse(e.data);
+        let reader = new jscdr.CDRReader(dcodeIO.ByteBuffer.fromBase64(sample.value));
+        let msg = StringMsg.decode(reader);
+        console.log("Chatter: " + msg.data);
+    }, false);
+} else {
+    console.log("Your browser does not support server-sent events...");
+}
+
+// /rt/kd_tree_resultトピックの購読
+var kdTreeResultSource = null;
+const TOPIC_KD_TREE_RESULT = "/rt/kd_tree_result";
+
+if (typeof (EventSource) !== "undefined") {
+    var key_expr_kd_tree_result = subScope + TOPIC_KD_TREE_RESULT;
+    console.log("Subscribe to EventSource: " + restApiBase + key_expr_kd_tree_result);
+    kdTreeResultSource = new EventSource(restApiBase + key_expr_kd_tree_result);
+    kdTreeResultSource.addEventListener("PUT", function (e) {
+        console.log("Received kd_tree_result message: " + e.data);
+        let sample = JSON.parse(e.data);
+        let reader = new jscdr.CDRReader(dcodeIO.ByteBuffer.fromBase64(sample.value));
+        let msg = Float64.decode(reader);
+        console.log("kd_tree_result: " + msg.data);
+
+        // Check if kd_tree_result is less than 0.2 and change background color
+        if (msg.data < 0.2) {
+            document.body.style.backgroundColor = "red";
+        } else if (msg.data <= 0.3) {
+            document.body.style.backgroundColor = "lightblue"; // 水色に変更
+        } else {
+            document.body.style.backgroundColor = ""; // 他の場合は背景色をリセット
+        }
+    }, false);
+}
+
 /////////////////////////////////////////////////////////////
 // ROS2 Types declaration with CDR encode/decode functions //
 /////////////////////////////////////////////////////////////
@@ -211,5 +256,37 @@ class Twist {
     encode(cdrWriter) {
         this.linear.encode(cdrWriter);
         this.angular.encode(cdrWriter);
+    }
+}
+
+// ROS2 std_msgs/msg/String type
+class StringMsg {
+    constructor(data) {
+        this.data = data;
+    }
+
+    encode(cdrWriter) {
+        cdrWriter.writeString(this.data);
+    }
+
+    static decode(cdrReader) {
+        let data = cdrReader.readString();
+        return new StringMsg(data);
+    }
+}
+
+// ROS2 std_msgs/msg/Float64 type
+class Float64 {
+    constructor(data) {
+        this.data = data;
+    }
+
+    encode(cdrWriter) {
+        cdrWriter.writeFloat64(this.data);
+    }
+
+    static decode(cdrReader) {
+        let data = cdrReader.readFloat64();
+        return new Float64(data);
     }
 }
