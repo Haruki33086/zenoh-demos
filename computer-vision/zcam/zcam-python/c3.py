@@ -21,13 +21,13 @@ def parse_arguments():
     return parser.parse_args()
 
 def configure_zenoh(args):
-    conf = zenoh.config_from_file(args.config) if args.config else zenoh.Config()
+    conf = zenoh.Config.from_file(args.config) if args.config else zenoh.Config()
     if args.mode:
-        conf.insert_json5(zenoh.config.MODE_KEY, json.dumps(args.mode))
+        conf.insert_json5("mode", json.dumps(args.mode))
     if args.connect:
-        conf.insert_json5(zenoh.config.CONNECT_KEY, json.dumps(args.connect))
+        conf.insert_json5("connect/endopoints", json.dumps(args.connect))
     if args.listen:
-        conf.insert_json5(zenoh.config.LISTEN_KEY, json.dumps(args.listen))
+        conf.insert_json5("listen/endopoints", json.dumps(args.listen))
     return conf
 
 def open_camera(args):
@@ -52,7 +52,7 @@ def main():
     conf = configure_zenoh(args)
 
     print('[INFO] Open Zenoh session...')
-    zenoh.init_logger()
+    zenoh.try_init_log_from_env()
     z = zenoh.open(conf)
 
     print('[INFO] Open camera...')
